@@ -1,18 +1,20 @@
 #include <Arduino.h>
-
-// put function declarations here:
-int myFunction(int, int);
+#include <FlexCAN_T4.h>
+#include "FlatCar.h"
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+  return;
+  Serial.begin(9600);
+  Serial.println("Serial Port Intialized");
+  canSetup();
+  pinSetup();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+  menuSelect();
+  runPrograms();
+
+  return;
+  // Cycle through an array of pins writing according to various functions
 }

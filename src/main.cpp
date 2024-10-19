@@ -16,5 +16,4 @@ void loop() {
   runPrograms();
 
   return;
-  // Cycle through an array of pins writing according to various functions
 }

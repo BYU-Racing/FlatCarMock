@@ -1,24 +1,13 @@
 #ifndef FLATCAR_H
 #define FLATCAR_H
 
-
-class FlatCar {
-
-private:
-
-protected:
-
-public:
-
-};
-
 char VAL;
 float SPEED;
 float RPS = SPEED * 0.350140874802; // Conversion factor from MPH to Rotations per second
 int BRAKE_VAL;
 int THROTTLE_VAL;
 float TARGET_RUN_TIME; // In minutes when selected by the user
-unsigned long RUN_TIME = TARGET_RUN_TIME * 60000; // Target run time of user in millis
+unsigned long RUN_TIME; // Target run time of user in millis
 unsigned long CURRENT_TIME;
 unsigned long DIGITAL_UPDATE; // How often Digital sensors should be updated
 unsigned long DIGITAL_ELAPSED;
@@ -35,10 +24,6 @@ unsigned long CAN_ELAPSED;
 unsigned long CAN_LAST;
 
 int j; // Used to store current wheel sensor status
-
-
-
-FlatCar car = FlatCar();
 
 const int WHEEL_SPEED_PINS[] = {2, 3, 4, 5};
 constexpr int START_SWITCH_PIN = 6;

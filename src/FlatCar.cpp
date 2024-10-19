@@ -1,15 +1,19 @@
 #include "FlatCar.h"
 #include <FlexCAN_T4.h>
 
-FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> can1;
+FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> CORE_CAN;
+FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> AUX_CAN;
 // Define defintions here
 
 
 void canSetup() {
-    Serial.begin(9600);
-    can1.begin();
-    can1.setBaudRate(500000);
-    Serial.println("CAN BUS INITALIZED");
+    CORE_CAN.begin();
+    CORE_CAN.setBaudRate(500000);
+    Serial.println("CORE CAN BUS INITALIZED");
+
+    AUX_CAN.begin();
+    AUX_CAN.setBaudRate(500000);
+    Serial.println("AUX CAN BUS INITIALIZED");
 }
 
 
@@ -120,6 +124,14 @@ void startSequence() {
     digitalWrite(TRACTIVE_PIN, HIGH);
 }
 
+void motorCAN() {
+    return;
+}
+
+void BMSCAN() {
+    return;
+}
+
 void staticTest() {
     startSequence();
     for (int i = 0; i < 4; i++) {
@@ -147,21 +159,35 @@ void updateTimes() {
 
 void variableTest() {
     startSequence();
-    // DIGITAL_UPDATE = 100;
+    RUN_TIME = TARGET_RUN_TIME * 60000;
+    DIGITAL_UPDATE = 100;
     ANALOG_UPDATE = 100;
-    // WHEEL_UPDATE = SPEED (ADD CONSTANT TO CONVERT FROM MPH TO DIGITAL READ RATE)
+    WHEEL_UPDATE = SPEED;
     CAN_UPDATE = 100;
     BRAKE_VAL = 0;
     THROTTLE_VAL = 0;
+    SPEED = 10;
     
     while (CURRENT_TIME < RUN_TIME) {
 
         updateTimes();
 
-        // if (DIGITAL_ELAPSED > DIGITAL_UPDATE) {
+        if (CURRENT_TIME % 1000 == 0) {
+            SPEED++;
+            RPS = (SPEED * 1.4667) / (3.141592653589793 * 1.33333333);
+            WHEEL_UPDATE = RPS / 10;
+            if (SPEED == 120) {
+                SPEED == 0;
+            }
+        }
 
-        //     DIGITAL_LAST = millis();
-        // }
+        if (DIGITAL_ELAPSED > DIGITAL_UPDATE) {
+            digitalWrite(TRACTIVE_PIN, HIGH);
+            digitalWrite(START_SWITCH_PIN, HIGH);
+
+            DIGITAL_LAST = millis();
+        }
+
         if (ANALOG_ELAPSED > ANALOG_UPDATE) {
             // Writes values to pins
             analogWrite(BRAKE_1_PIN, BRAKE_VAL);

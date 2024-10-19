@@ -1,9 +1,11 @@
 #ifndef FLATCAR_H
 #define FLATCAR_H
 
+bool CAN_SNIFF;
 char VAL;
 float SPEED;
-float RPS = SPEED * 0.350140874802; // Conversion factor from MPH to Rotations per second
+float RPS;
+unsigned long SPEED_UPDATE;
 int BRAKE_VAL;
 int THROTTLE_VAL;
 float TARGET_RUN_TIME; // In minutes when selected by the user
@@ -23,7 +25,7 @@ unsigned long CAN_UPDATE;
 unsigned long CAN_ELAPSED;
 unsigned long CAN_LAST;
 
-int j; // Used to store current wheel sensor status
+bool j; // Used to store current wheel sensor status
 
 const int WHEEL_SPEED_PINS[] = {2, 3, 4, 5};
 constexpr int START_SWITCH_PIN = 6;
@@ -38,6 +40,7 @@ const int NUM_WHEEL_SPEED_PINS = sizeof(WHEEL_SPEED_PINS) / sizeof(WHEEL_SPEED_P
 char menuSelect();
 void canSetup();
 void pinSetup();
+void canSniff();
 void menuInit();
 char runPrograms();
 void staticTest();

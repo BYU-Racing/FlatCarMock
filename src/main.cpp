@@ -3,7 +3,6 @@
 #include "FlatCar.h"
 
 void setup() {
-  return;
   Serial.begin(9600);
   Serial.println("Serial Port Intialized");
   canSetup();
@@ -11,9 +10,6 @@ void setup() {
 }
 
 void loop() {
-
   menuSelect();
   runPrograms();
-
-  return;
 }

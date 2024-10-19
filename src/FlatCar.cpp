@@ -53,6 +53,34 @@ void pinSetup() {
     Serial.println("ALL PINS INITIALIZED");
 }
 
+void canSniff() {
+    CAN_message_t msg;
+
+    if (CORE_CAN.read(msg)) {
+        Serial.print("[CORE CAN] ID: ");
+        Serial.print(msg.id);
+        Serial.print(" LEGNTH: ");
+        Serial.print(msg.len);
+        Serial.print(" DATA: ");
+        for (uint8_t i = 0; i < msg.len; i++) {
+            Serial.print(msg.buf[i]);
+            Serial.print(" ");
+        }
+    }
+
+    if (AUX_CAN.read(msg)) {
+        Serial.print("[AUX CAN] ID: ");
+        Serial.print(msg.id);
+        Serial.print(" LEGNTH: ");
+        Serial.print(msg.len);
+        Serial.print(" DATA: ");
+        for (uint8_t i = 0; i < msg.len; i++) {
+            Serial.print(msg.buf[i]);
+            Serial.print(" ");
+        }
+    }
+}
+
 void menuInit() {
     Serial.println("WELCOME TO FLATCAR");
     Serial.println("START MENU:");
@@ -65,17 +93,26 @@ void menuInit() {
 
 char menuSelect() {
     menuInit();
+    
     Serial.println("WAITING FOR INPUT");
     Serial.print("SELECTION: ");
     while (!Serial.available()) {
         // Wait for serial input
     }
     char VAL = Serial.read();
+    
     Serial.print("TARGET RUN TIME (MIN): ");
-        while (!Serial.available()) {
+    while (!Serial.available()) {
         // Wait for serial input
     }
     float RUN_TIME = Serial.read();
+
+    Serial.print("TOGGLE CAN SNIFF");
+    while (!Serial.available()) {
+        // Wait for serial input
+    }
+    bool CAN_SNIFF = Serial.read();
+    
     switch (VAL) {
         case '1':
             Serial.println("SELECTED: STATIC VALUE TEST");
@@ -157,28 +194,38 @@ void updateTimes() {
 
 }
 
-void variableTest() {
-    startSequence();
+void updateRates() {
     RUN_TIME = TARGET_RUN_TIME * 60000;
-    DIGITAL_UPDATE = 100;
+    DIGITAL_UPDATE = 1000;
     ANALOG_UPDATE = 100;
-    WHEEL_UPDATE = SPEED;
+    WHEEL_UPDATE = 350; // Wheel update value for 10 mph initial start
     CAN_UPDATE = 100;
     BRAKE_VAL = 0;
     THROTTLE_VAL = 0;
     SPEED = 10;
+    SPEED_UPDATE = 5000;
+}
+
+void variableTest() {
+    startSequence();
+    updateRates();
     
     while (CURRENT_TIME < RUN_TIME) {
 
         updateTimes();
 
-        if (CURRENT_TIME % 1000 == 0) {
+        if (CAN_SNIFF) {
+            canSniff();
+        }
+
+        if (CURRENT_TIME >= SPEED_UPDATE) {
             SPEED++;
             RPS = (SPEED * 1.4667) / (3.141592653589793 * 1.33333333);
             WHEEL_UPDATE = RPS / 10;
             if (SPEED == 120) {
                 SPEED == 0;
             }
+            SPEED_UPDATE += 5000;
         }
 
         if (DIGITAL_ELAPSED > DIGITAL_UPDATE) {
@@ -224,23 +271,31 @@ void variableTest() {
             }
             WHEEL_LAST = millis();
         }
-        if (CAN_ELAPSED > CAN_UPDATE) {
+        // if (CAN_ELAPSED > CAN_UPDATE) {
 
-            CAN_LAST = millis();
-        }
-        else {
-            CURRENT_TIME = millis();
-        }
+        //     CAN_LAST = millis();
+        // }
+        // else {
+        //     CURRENT_TIME = millis();
+        // }
     }
 }
 
 void randomTest() {
     startSequence();
+    updateRates();
+
     while (CURRENT_TIME < RUN_TIME) {
 
         updateTimes();
 
+        if (CAN_SNIFF) {
+            canSniff();
+        }
+
         if (DIGITAL_ELAPSED > DIGITAL_UPDATE) {
+            digitalWrite(TRACTIVE_PIN, HIGH);
+            digitalWrite(START_SWITCH_PIN, HIGH);
 
             DIGITAL_LAST = millis();
         }
@@ -270,13 +325,13 @@ void randomTest() {
             }
             WHEEL_LAST = millis();
         }
-        if (CAN_ELAPSED > CAN_UPDATE) {
+        // if (CAN_ELAPSED > CAN_UPDATE) {
 
-            CAN_LAST = millis();
-        }
-        else {
-            CURRENT_TIME = millis();
-        }
+        //     CAN_LAST = millis();
+        // }
+        // else {
+        //     CURRENT_TIME = millis();
+        // }
     }
 }
 

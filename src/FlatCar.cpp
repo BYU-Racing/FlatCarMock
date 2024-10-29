@@ -3,7 +3,40 @@
 
 FlexCAN_T4<CAN1, RX_SIZE_256, TX_SIZE_16> CORE_CAN;
 FlexCAN_T4<CAN2, RX_SIZE_256, TX_SIZE_16> AUX_CAN;
-// Define defintions here
+
+
+bool CAN_SNIFF = false;
+char USER_INPUT = 0;
+float SPEED = 0.0;
+float RPS = 0.0;
+unsigned long SPEED_UPDATE = 0;
+int BRAKE_VAL = 0;
+int THROTTLE_VAL = 0;
+float TARGET_RUN_TIME = 0.0;
+unsigned long RUN_TIME = 0;
+unsigned long CURRENT_TIME = 0;
+unsigned long DIGITAL_UPDATE = 0;
+unsigned long DIGITAL_ELAPSED = 0;
+unsigned long DIGITAL_LAST = 0;
+unsigned long WHEEL_UPDATE = 0;
+unsigned long WHEEL_ELAPSED = 0;
+unsigned long WHEEL_LAST = 0;
+unsigned long ANALOG_UPDATE = 0;
+unsigned long ANALOG_ELAPSED = 0;
+unsigned long ANALOG_LAST = 0;
+long RANDOM_ANALOG = 0;
+unsigned long CAN_UPDATE = 0;
+unsigned long CAN_ELAPSED = 0;
+unsigned long CAN_LAST = 0;
+bool WHEEL_STATUS = false;
+
+const int WHEEL_SPEED_PINS[] = {2, 3, 4, 5};
+int START_SWITCH_PIN = 6;
+int BRAKE_1_PIN = 14;
+int TRACTIVE_PIN = 9;
+int THROTTLE_1_PIN = 15;
+int THROTTLE_2_PIN = 16;
+const int NUM_WHEEL_SPEED_PINS = sizeof(WHEEL_SPEED_PINS) / sizeof(WHEEL_SPEED_PINS[0]);
 
 
 void canSetup() {
@@ -91,7 +124,7 @@ void menuInit() {
     Serial.println("5) EXIT");
 }
 
-char menuSelect() {
+void menuSelect() {
     menuInit();
     
     Serial.println("WAITING FOR INPUT");
@@ -99,7 +132,7 @@ char menuSelect() {
     while (!Serial.available()) {
         // Wait for serial input
     }
-    char VAL = Serial.read();
+    char USER_INPUT = Serial.read();
     
     Serial.print("TARGET RUN TIME (MIN): ");
     while (!Serial.available()) {
@@ -113,7 +146,7 @@ char menuSelect() {
     }
     bool CAN_SNIFF = Serial.read();
     
-    switch (VAL) {
+    switch (USER_INPUT) {
         case '1':
             Serial.println("SELECTED: STATIC VALUE TEST");
             Serial.print("TARGET RUN TIME (MIN): ");
@@ -143,8 +176,8 @@ char menuSelect() {
     }
 }
 
-char runPrograms() {
-    switch (VAL) {
+void runPrograms() {
+    switch (USER_INPUT) {
         case '1':
             staticTest();
         case '2':
@@ -221,9 +254,9 @@ void variableTest() {
         if (CURRENT_TIME >= SPEED_UPDATE) {
             SPEED++;
             RPS = (SPEED * 1.4667) / (3.141592653589793 * 1.33333333);
-            WHEEL_UPDATE = RPS / 10;
+            WHEEL_UPDATE = 1 / (RPS / 10);
             if (SPEED == 120) {
-                SPEED == 0;
+                SPEED = 0;
             }
             SPEED_UPDATE += 5000;
         }
@@ -246,10 +279,10 @@ void variableTest() {
             THROTTLE_VAL++;
 
             // Resets values at 255
-            if (BRAKE_VAL = 255) {
+            if (BRAKE_VAL == 255) {
                 BRAKE_VAL = 0;
             }
-            if (THROTTLE_VAL = 255) {
+            if (THROTTLE_VAL == 255) {
                 THROTTLE_VAL = 0;
             }
 
@@ -257,17 +290,17 @@ void variableTest() {
             ANALOG_LAST = millis();
         }
         if (WHEEL_ELAPSED > WHEEL_UPDATE) {
-            if (j = 0) {
+            if (WHEEL_STATUS == 0) {
                 for (int i = 0; i < 4; i++) {
                     digitalWrite(WHEEL_SPEED_PINS[i], HIGH);
                 }
-                j = 1;
+                WHEEL_STATUS = 1;
             }
-            if (j = 1) {
+            if (WHEEL_STATUS == 1) {
                 for (int i = 0; i < 4; i++) {
                     digitalWrite(WHEEL_SPEED_PINS[i], LOW);
                 }
-                j = 0;
+                WHEEL_STATUS = 0;
             }
             WHEEL_LAST = millis();
         }
@@ -311,17 +344,17 @@ void randomTest() {
             ANALOG_LAST = millis();
         }
         if (WHEEL_ELAPSED > WHEEL_UPDATE) {
-                if (j = 0) {
+                if (WHEEL_STATUS == 0) {
                 for (int i = 0; i < 4; i++) {
                     digitalWrite(WHEEL_SPEED_PINS[i], HIGH);
                 }
-                j = 1;
+                WHEEL_STATUS = 1;
             }
-            if (j = 1) {
+            if (WHEEL_STATUS == 1) {
                 for (int i = 0; i < 4; i++) {
                     digitalWrite(WHEEL_SPEED_PINS[i], LOW);
                 }
-                j = 0;
+                WHEEL_STATUS = 0;
             }
             WHEEL_LAST = millis();
         }

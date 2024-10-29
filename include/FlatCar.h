@@ -1,48 +1,48 @@
 #ifndef FLATCAR_H
 #define FLATCAR_H
 
-bool CAN_SNIFF;
-char VAL;
-float SPEED;
-float RPS;
-unsigned long SPEED_UPDATE;
-int BRAKE_VAL;
-int THROTTLE_VAL;
-float TARGET_RUN_TIME; // In minutes when selected by the user
-unsigned long RUN_TIME; // Target run time of user in millis
-unsigned long CURRENT_TIME;
-unsigned long DIGITAL_UPDATE; // How often Digital sensors should be updated
-unsigned long DIGITAL_ELAPSED;
-unsigned long DIGITAL_LAST;
-unsigned long WHEEL_UPDATE;
-unsigned long WHEEL_ELAPSED;
-unsigned long WHEEL_LAST;
-unsigned long ANALOG_UPDATE;
-unsigned long ANALOG_ELAPSED;
-unsigned long ANALOG_LAST;
-long RANDOM_ANALOG;
-unsigned long CAN_UPDATE;
-unsigned long CAN_ELAPSED;
-unsigned long CAN_LAST;
+extern bool CAN_SNIFF;
+extern char USER_INPUT;
+extern float SPEED;
+extern float RPS;
+extern unsigned long SPEED_UPDATE;
+extern int BRAKE_VAL;
+extern int THROTTLE_VAL;
+extern float TARGET_RUN_TIME; // In minutes when selected by the user
+extern unsigned long RUN_TIME; // Target run time of user in millis
+extern unsigned long CURRENT_TIME;
+extern unsigned long DIGITAL_UPDATE; // How often Digital sensors should be updated
+extern unsigned long DIGITAL_ELAPSED;
+extern unsigned long DIGITAL_LAST;
+extern unsigned long WHEEL_UPDATE;
+extern unsigned long WHEEL_ELAPSED;
+extern unsigned long WHEEL_LAST;
+extern unsigned long ANALOG_UPDATE;
+extern unsigned long ANALOG_ELAPSED;
+extern unsigned long ANALOG_LAST;
+extern long RANDOM_ANALOG;
+extern unsigned long CAN_UPDATE;
+extern unsigned long CAN_ELAPSED;
+extern unsigned long CAN_LAST;
 
-bool j; // Used to store current wheel sensor status
+extern bool WHEEL_STATUS; // Used to store current wheel sensor status
 
-const int WHEEL_SPEED_PINS[] = {2, 3, 4, 5};
-constexpr int START_SWITCH_PIN = 6;
-constexpr int BRAKE_1_PIN = A0;
-constexpr int TRACTIVE_PIN = 9;
-constexpr int THROTTLE_1_PIN = A2;
-constexpr int THROTTLE_2_PIN = A3;
+extern const int WHEEL_SPEED_PINS[];
+extern int START_SWITCH_PIN;
+extern int BRAKE_1_PIN;
+extern int TRACTIVE_PIN;
+extern int THROTTLE_1_PIN;
+extern int THROTTLE_2_PIN;
 
-const int NUM_WHEEL_SPEED_PINS = sizeof(WHEEL_SPEED_PINS) / sizeof(WHEEL_SPEED_PINS[0]);
+extern const int NUM_WHEEL_SPEED_PINS;
 
 
-char menuSelect();
+void menuSelect();
 void canSetup();
 void pinSetup();
 void canSniff();
 void menuInit();
-char runPrograms();
+void runPrograms();
 void staticTest();
 void variableTest();
 void randomTest();

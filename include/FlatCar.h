@@ -1,31 +1,34 @@
 #ifndef FLATCAR_H
 #define FLATCAR_H
 
-extern bool CAN_SNIFF;
-extern char USER_INPUT;
+extern bool canSniffState;
+extern int USER_INPUT;
 extern float SPEED;
 extern float RPS;
-extern unsigned long SPEED_UPDATE;
-extern int BRAKE_VAL;
-extern int THROTTLE_VAL;
-extern float TARGET_RUN_TIME; // In minutes when selected by the user
-extern unsigned long RUN_TIME; // Target run time of user in millis
-extern unsigned long CURRENT_TIME;
+extern unsigned long speedUpdate;
+extern int brakeVal;
+extern int throttleVal;
+extern float targetRunTime; // In minutes when selected by the user
+extern unsigned long runTime; // Target run time of user in millis
+extern unsigned long currentTime;
 extern unsigned long DIGITAL_UPDATE; // How often Digital sensors should be updated
-extern unsigned long DIGITAL_ELAPSED;
-extern unsigned long DIGITAL_LAST;
+extern unsigned long digitalElapsed;
+extern unsigned long digitalLast;
 extern unsigned long WHEEL_UPDATE;
-extern unsigned long WHEEL_ELAPSED;
-extern unsigned long WHEEL_LAST;
+extern unsigned long wheelElapsed;
+extern unsigned long wheelLast;
 extern unsigned long ANALOG_UPDATE;
-extern unsigned long ANALOG_ELAPSED;
-extern unsigned long ANALOG_LAST;
-extern long RANDOM_ANALOG;
+extern unsigned long analogElapsed;
+extern unsigned long analogLast;
+extern long randomAnalog;
 extern unsigned long CAN_UPDATE;
-extern unsigned long CAN_ELAPSED;
-extern unsigned long CAN_LAST;
+extern unsigned long canElapsed;
+extern unsigned long canLast;
+extern unsigned long CAN_SNIFF_UPDATE;
+extern unsigned long canSniffElapsed;
+extern unsigned long canSniffLast;
 
-extern bool WHEEL_STATUS; // Used to store current wheel sensor status
+extern bool wheelStatus; // Used to store current wheel sensor status
 
 extern const int WHEEL_SPEED_PINS[];
 extern int START_SWITCH_PIN;
